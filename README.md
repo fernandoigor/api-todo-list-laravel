@@ -53,5 +53,5 @@ php artisan jwt:secret
 
 ### Migrations
 ```sh
-php artisan migrate
+php artisan migrate --seed
 ```

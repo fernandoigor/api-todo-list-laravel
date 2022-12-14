@@ -27,3 +27,10 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('refresh', 'refresh');
     Route::post('me', 'me');
 });
+
+Route::controller(TypeTodoController::class)->group(function () {
+    Route::get('todos/type', 'index');
+    Route::post('todos/type', 'create');
+    Route::put('todos/type/{id}', 'update');
+    Route::delete('todos/type/{id}', 'delete');
+});
