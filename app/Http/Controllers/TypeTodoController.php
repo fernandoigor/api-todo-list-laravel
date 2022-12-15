@@ -6,8 +6,6 @@ use App\Http\Requests\StoreUpdateTypeTodo;
 use App\Http\Resources\TypeTodoResource;
 use App\Services\TypeTodoService;
 
-use App\Models\TypeTodo;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
@@ -33,11 +31,6 @@ class TypeTodoController extends Controller
             'description' => 'required'
         ]);
 
-        
-        if($this->typeService->exists($request->description)){
-            return response()->json(["message"=>"Already exists"], JsonResponse::HTTP_METHOD_NOT_ALLOWED);
-        }
-
         $type = $this->typeService->create($request->all());
         return response()->json(TypeTodoResource::collection([$type]), JsonResponse::HTTP_CREATED);
     }
@@ -48,11 +41,6 @@ class TypeTodoController extends Controller
             'description' => 'required'
         ]);
 
-        $typesByDescriptions = $this->typeService->getByDescription($request->description);
-        if(isset($typesByDescriptions[0]) && $typesByDescriptions[0]->id != $id){
-            return response()->json(["message"=>"Already exists"], JsonResponse::HTTP_METHOD_NOT_ALLOWED);
-        }
-
         $this->typeService->update($request->all(),$id);
         return response()->json(null, JsonResponse::HTTP_NO_CONTENT);
     }
@@ -62,5 +50,5 @@ class TypeTodoController extends Controller
         $this->typeService->delete($id);
         return response()->json(null, JsonResponse::HTTP_NO_CONTENT);
     }
-    
+
 }

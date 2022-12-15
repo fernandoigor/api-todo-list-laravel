@@ -53,5 +53,10 @@ class TodoRepository
     }
 
 
+    public function getByType(int $type)
+    {
+        return $this->entity->where('type_id', $type);
+    }
+
 
 }

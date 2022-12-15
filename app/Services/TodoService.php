@@ -7,7 +7,10 @@ use App\Models\TypeTodo;
 
 use Illuminate\Http\JsonResponse;
 
-use App\Exceptions\TokenInvalidException;
+use App\Exceptions\TodoAlreadyExistsException;
+use App\Exceptions\TodoNotExistsException;
+use App\Exceptions\TodoFromAnotherUserException;
+use App\Exceptions\TypeNotExistsException;
 
 class TodoService
 {
@@ -28,10 +31,10 @@ class TodoService
     public function create(array $data)
     {
         if(!TypeTodo::find($data['type_id'])){
-            dd("Type todo not exists");
+            throw new TypeNotExistsException('Tipo de tarefa não encontrado.');
         }
         if($this->exists($data['title'])){
-            dd("Already exists");
+            throw new TodoAlreadyExistsException('Titulo da tarefa já existe para seu usuário.');
         }
         return $this->respository->create($data);
     }
@@ -40,12 +43,12 @@ class TodoService
     {
         $todo = $this->respository->get($id);
         if(!$todo){
-            dd('Todo not exists');
+            throw new TodoNotExistsException('Tarefa não existe.');
         }
 
         $userId = auth()->user()->getAuthIdentifier();
         if($todo->user_id != $userId){
-            dd('Todo de outro usuario');
+            throw new TodoFromAnotherUserException('Tarefa de outro usuário.');
         }
         return $todo;
     }
@@ -54,12 +57,12 @@ class TodoService
     {
         $userId = auth()->user()->getAuthIdentifier();
         if(!$this->checkTodoUser($id, $userId)){
-            dd("todo pertence ao outro usuario");
+            throw new TodoFromAnotherUserException('Tarefa de outro usuário.');
         }
 
         $typesByTitle = $this->respository->getByTitle($data['title'],$userId);
         if(isset($typesByTitle[0]) && $typesByTitle[0]->id != $id){
-            dd("Todo already exists");
+            throw new TodoAlreadyExistsException('Titulo da tarefa já existe para seu usuário.');
         }
         return $this->respository->update($data, $id);
     }
@@ -68,7 +71,7 @@ class TodoService
     {
         $userId = auth()->user()->getAuthIdentifier();
         if(!$this->checkTodoUser($id, $userId)){
-            dd("todo pertence ao outro usuario");
+            throw new TodoFromAnotherUserException('Tarefa de outro usuário.');
         }
         return $this->respository->delete($id);
     }
@@ -85,6 +88,11 @@ class TodoService
         if($type != null && $type->user_id == $userId)
             return true;
         return false;
+    }
+
+    public function existsTodoByType(int $typeId)
+    {
+        return $this->respository->getByType($typeId)->count() > 0;
     }
 
 }
