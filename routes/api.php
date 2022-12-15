@@ -28,16 +28,18 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('me', 'me');
 });
 
+
+Route::controller(TypeTodoController::class)->group(function () {
+    Route::get('todos/type', 'index');
+    Route::post('todos/type', 'create');
+    Route::put('todos/type/{id}', 'update');
+    Route::delete('todos/type/{id}', 'delete');
+});
+
 Route::controller(TodoController::class)->group(function () {
     Route::get('todos', 'index');
     Route::get('todos/{id}', 'get');
     Route::post('todos', 'create');
     Route::put('todos/{id}', 'update');
     Route::delete('todos/{id}', 'delete');
-});
-Route::controller(TypeTodoController::class)->group(function () {
-    Route::get('todos/type', 'index');
-    Route::post('todos/type', 'create');
-    Route::put('todos/type/{id}', 'update');
-    Route::delete('todos/type/{id}', 'delete');
 });
