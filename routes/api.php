@@ -30,6 +30,7 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::controller(TodoController::class)->group(function () {
     Route::get('todos', 'index');
+    Route::get('todos/{id}', 'get');
     Route::post('todos', 'create');
     Route::put('todos/{id}', 'update');
     Route::delete('todos/{id}', 'delete');

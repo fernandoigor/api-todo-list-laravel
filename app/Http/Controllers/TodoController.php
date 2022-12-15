@@ -25,11 +25,14 @@ class TodoController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        // auth()->user())->getAuthIdentifier();
-        
         $type = $this->todoService->getAll();
         return response()->json($type);
-        // dd(auth()->user()->getAuthIdentifier());
+    }
+
+    public function get(Request $request,int $id): JsonResponse
+    {
+        $type = $this->todoService->get($id);
+        return response()->json($type);
     }
 
     public function create(Request $request): JsonResponse
@@ -41,14 +44,6 @@ class TodoController extends Controller
         ]);
 
 
-        
-        if(!TypeTodo::find($request->type_id)){
-            return response()->json(["message"=>"Type todo not exists"], JsonResponse::HTTP_METHOD_NOT_ALLOWED);
-        }
-        if($this->todoService->exists($request->title)){
-            return response()->json(["message"=>"Already exists"], JsonResponse::HTTP_METHOD_NOT_ALLOWED);
-        }
-
         $request['user_id']=auth()->user()->getAuthIdentifier();
 
         $type = $this->todoService->create($request->all());
@@ -59,12 +54,13 @@ class TodoController extends Controller
 
     public function update(Request $request,int $id): JsonResponse
     {
-        $typesByTitle = $this->todoService->exists($request->title);
-        if(isset($typesByTitle[0]) && $typesByTitle[0]->id != $id){
-            return response()->json(["message"=>"Todo already exists"], JsonResponse::HTTP_METHOD_NOT_ALLOWED);
-        }
+        $this->validate($request, [
+            'title' => 'required',
+            'description' => 'required',
+            'type_id' => 'required',
+        ]);
 
-        $this->todoService->update($request->all(),$id);
+        $this->todoService->update($request->all(), $id);
         return response()->json(null, JsonResponse::HTTP_NO_CONTENT);
     }
 
@@ -73,5 +69,5 @@ class TodoController extends Controller
         $this->todoService->delete($id);
         return response()->json(null, JsonResponse::HTTP_NO_CONTENT);
     }
-    
+
 }
