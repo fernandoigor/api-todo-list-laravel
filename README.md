@@ -55,3 +55,27 @@ php artisan jwt:secret
 ```sh
 php artisan migrate --seed
 ```
+
+
+
+
+## Routes
+
+- **User**
+    - **`->POST`** `/api/login` (Login usuário)
+    - **`->POST`** `/api/register` (Cadastro usuário)
+    - **`->POST`** `/api/refresh` (Atualizar token)
+    - **`->POST`** `/api/logout` (Limpar token)
+
+- **Types**
+    - **`->GET`** `/api/todos/type` (Lista os tipos de tarefa)
+    - **`->POST`** `/api/todos/type` (Cria um tipo de tarefa)
+    - **`->PUT`** `/api/todos/type/{id}` (Altera descrição do tipo de tarefa)
+    - **`->DELETE`** `/api/todos/type/{id}` (Deleta um tipo de tarefa)
+
+- **Todos**
+    - **`->GET`** `/api/todos/` (Lista todas as tarefas do usuário)
+    - **`->GET`** `/api/todos/{id}` (Mostra uma tarefa do usuário)
+    - **`->POST`** `/api/todos/` (Cria uma nova tarefa para o usuário)
+    - **`->PUT`** `/api/todos/` (Altera a tarefa do usuário)
+    - **`->DELETE`** `/api/todos/` (Exclui a tarefa do usuário)
